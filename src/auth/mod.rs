@@ -1,21 +1,57 @@
 use std::str;
-
-use serde_json::Number;
-
+use serde::{Deserialize, Serialize};
 use crate::prelude::*;
-pub async fn search_schools(school: &str) -> Result<Vec<School>,SduiError> {
-    let response = reqwest::get(format!("https://api.sdui.app/v1/leads?search={}",school)).await.map_err(|_| SduiError::RequestError)?;
-    let data = response.json::<GenericSduiResponse>().await.map_err(|_| SduiError::RequestError)?;
-    let schools = data.data.as_array().ok_or(SduiError::RequestError)?
+
+pub async fn search_schools(school: &str) -> Result<(Vec<School>,RateLimit),SduiError> {
+    let response = CLIENT.get(format!("https://api.sdui.app/v1/leads?search={}",school)).send().await.map_err(|e| SduiError::RequestError(e))?;
+    let rate_limit = RateLimit::from_headers(response.headers());
+    let data = response.json::<GenericSduiResponse>().await.map_err(|e| SduiError::RequestError(e))?;
+    let schools = data.data.as_array().ok_or(SduiError::JSONError)?
     .iter()
     .filter_map(|school| School::from_value(school))
     .collect();
-    Ok(schools)
+    Ok((schools,rate_limit))
 }
 
-pub async fn login() {
-
+pub async fn login(data: &LoginData) -> Result<(LoginResponse,RateLimit),SduiError> {
+    println!("{}",serde_json::to_string(data).map_err(|_| SduiError::JSONError)?);
+    let response= CLIENT.post("https://api.sdui.app/v1/auth/login")
+    .json(data)
+    .send()
+    .await
+    .map_err(|e| SduiError::RequestError(e))?;
+    let rate_limit = RateLimit::from_headers(response.headers());
+    let data: GenericSduiResponse = response
+    .json()
+    .await
+    .map_err(|e| SduiError::JSONError)?;
+    println!("{:?}",data);
+    Ok((LoginResponse::from_value(data.data).ok_or(SduiError::LoginError)?,rate_limit))
 }
+
+#[derive(Deserialize,Debug)]
+pub struct LoginResponse {
+    access_token: String,
+    expires_in: u64
+}
+
+impl LoginResponse {
+    fn from_value(value: serde_json::Value) -> Option<Self> {
+        Some(LoginResponse {
+            access_token: value.as_object()?.get("access_token")?.as_str()?.to_string(),
+            expires_in: value.as_object()?.get("expires_in")?.as_u64()?,
+        })
+    }
+}
+
+#[derive(Serialize)]
+pub struct LoginData {
+    pub identifier: String,
+    pub password: String,
+    pub slink: String,
+    pub stayLoggedIn: bool,
+    pub showError: bool
+  }
 
 #[derive(Debug)]
 pub struct School {
