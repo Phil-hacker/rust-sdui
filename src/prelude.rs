@@ -2,7 +2,7 @@ use reqwest::header::{HeaderMap, HeaderValue};
 use serde::Deserialize;
 
 lazy_static!{
-    pub(crate) static ref CLIENT: reqwest::Client = reqwest::Client::builder().https_only(true).user_agent(concat!(env!("CARGO_PKG_NAME"),"/",env!("CARGO_PKG_VERSION"),)).build().unwrap_or(reqwest::Client::default());
+    pub(crate) static ref CLIENT: reqwest::Client = reqwest::Client::builder().https_only(true).user_agent(concat!(env!("CARGO_PKG_NAME"),"/",env!("CARGO_PKG_VERSION"),)).build().unwrap_or_default();
 }
 
 #[derive(Debug)]

@@ -6,8 +6,6 @@ pub mod prelude;
 
 #[cfg(test)]
 mod tests {
-    use crate::auth::LoginData;
-
     use super::*;
     #[tokio::test]
     async fn test_search() {
