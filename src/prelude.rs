@@ -42,3 +42,41 @@ pub struct SduiMeta {
     pub errors: serde_json::Value,
     pub success: serde_json::Value
 }
+
+
+#[derive(Debug)]
+pub struct School {
+    id: u64,
+    name: String,
+    name_alias: Option<String>,
+    slink: String,
+    uuid: String
+}
+
+impl School {
+    pub(crate) fn from_value(value: &serde_json::Value) -> Option<Self> {
+        let map = value.as_object()?;
+        Some(School {
+            id: map.get("id")?.as_u64()?,
+            name: map.get("name")?.as_str()?.to_string(),
+            name_alias: map.get("name_alias")?.as_str().map(|str| str.to_string()),
+            slink: map.get("slink")?.as_str()?.to_string(),
+            uuid: map.get("uuid")?.as_str()?.to_string()
+        })
+    }
+    pub fn get_id(&self) -> u64 {
+        self.id
+    }
+    pub fn get_name(&self) -> String {
+        self.name.clone()
+    }
+    pub fn get_name_alias(&self) -> Option<String> {
+        self.name_alias.clone()
+    }
+    pub fn get_slink(&self) -> String {
+        self.slink.clone()
+    }
+    pub fn get_uuid(&self) -> String {
+        self.uuid.clone()
+    }
+}
