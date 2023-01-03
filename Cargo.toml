@@ -1,5 +1,5 @@
 [package]
-name = "rust-sdui"
+name = "rust_sdui"
 version = "0.1.0"
 edition = "2021"
 
