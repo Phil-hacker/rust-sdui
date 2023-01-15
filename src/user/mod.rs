@@ -1,7 +1,7 @@
 use reqwest::StatusCode;
 use serde::Deserialize;
 
-use crate::prelude::*;
+use crate::{prelude::*, grade::Grade};
 
 pub async fn get_self(token: &String) -> Result<(SduiUser,RateLimit),SduiError> {
     let response = CLIENT.get("https://api.sdui.app/v1/users/self").bearer_auth(token).send().await.map_err(SduiError::RequestError)?;
