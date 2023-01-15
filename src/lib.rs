@@ -3,6 +3,7 @@ extern crate lazy_static;
 
 pub mod auth;
 pub mod user;
+pub mod grade;
 pub mod prelude;
 
 #[cfg(test)]
