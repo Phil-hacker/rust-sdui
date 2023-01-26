@@ -1,7 +1,6 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-
-#[derive(Debug,Deserialize)]
+#[derive(Debug, Clone, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct Grade {
     pub id: u64,
     pub school_id: u64,
@@ -11,5 +10,5 @@ pub struct Grade {
     pub level: Option<String>,
     pub future_shortcut: Option<String>,
     pub bookable_id: Option<u64>,
-    pub migrate_at: Option<u64>
+    pub migrate_at: Option<u64>,
 }

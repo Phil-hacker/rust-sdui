@@ -1,34 +1,53 @@
 use reqwest::StatusCode;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-use crate::{prelude::*, grade::Grade};
+use crate::{grade::Grade, prelude::*};
 
-pub async fn get_self(token: &String) -> Result<(SduiUser,RateLimit),SduiError> {
-    let response = CLIENT.get("https://api.sdui.app/v1/users/self").bearer_auth(token).send().await.map_err(SduiError::RequestError)?;
+pub async fn get_self(token: &String) -> Result<(SduiUser, RateLimit), SduiError> {
+    let response = CLIENT
+        .get("https://api.sdui.app/v1/users/self")
+        .bearer_auth(token)
+        .send()
+        .await
+        .map_err(SduiError::RequestError)?;
     if response.status() == StatusCode::UNAUTHORIZED {
         return Err(SduiError::NotLoggedIn);
     }
     let rate_limit = RateLimit::from_headers(response.headers());
-    let data = response.json::<SduiResponse<SduiUser>>().await.map_err(SduiError::RequestError)?;
-    Ok((data.data,rate_limit))
+    let data = response
+        .json::<SduiResponse<SduiUser>>()
+        .await
+        .map_err(SduiError::RequestError)?;
+    Ok((data.data, rate_limit))
 }
 
-pub async fn get_user(token: &String,user_id: &String) -> Result<(SduiUser,RateLimit),SduiError> {
-    let response = CLIENT.get(format!("https://api.sdui.app/v1/users/{}",user_id)).bearer_auth(token).send().await.map_err(SduiError::RequestError)?;
+pub async fn get_user(
+    token: &String,
+    user_id: &String,
+) -> Result<(SduiUser, RateLimit), SduiError> {
+    let response = CLIENT
+        .get(format!("https://api.sdui.app/v1/users/{}", user_id))
+        .bearer_auth(token)
+        .send()
+        .await
+        .map_err(SduiError::RequestError)?;
     if response.status() == StatusCode::UNAUTHORIZED {
         return Err(SduiError::NotLoggedIn);
     }
     let rate_limit = RateLimit::from_headers(response.headers());
-    let data = response.json::<SduiResponse<SduiUser>>().await.map_err(SduiError::RequestError)?;
-    Ok((data.data,rate_limit))
+    let data = response
+        .json::<SduiResponse<SduiUser>>()
+        .await
+        .map_err(SduiError::RequestError)?;
+    Ok((data.data, rate_limit))
 }
 
-#[derive(Debug,Deserialize)]
+#[derive(Debug, Clone, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct SduiUser {
     pub uuid: String,
     pub firstname: String,
     pub lastname: String,
-    #[serde(rename="type")]
+    #[serde(rename = "type")]
     pub role: String,
     pub title: Option<String>,
     pub sex: char,
@@ -42,11 +61,11 @@ pub struct SduiUser {
     pub meta: UserMeta,
 }
 
-#[derive(Debug,Deserialize)]
+#[derive(Debug, Clone, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct UserMeta {
     pub displayname: String,
     pub subtitle: String,
-    #[serde(rename="type")]
+    #[serde(rename = "type")]
     pub role: String,
     pub uri: String,
     pub avatar_uri: String,
