@@ -24,10 +24,6 @@ pub async fn search_schools(school: &str) -> Result<(Vec<School>, RateLimit), Sd
 }
 
 pub async fn login(data: &LoginData) -> Result<(LoginResponse, RateLimit), SduiError> {
-    println!(
-        "{}",
-        serde_json::to_string(data).map_err(|_| SduiError::JSONError)?
-    );
     let response = CLIENT
         .post("https://api.sdui.app/v1/auth/login")
         .json(data)
@@ -36,7 +32,6 @@ pub async fn login(data: &LoginData) -> Result<(LoginResponse, RateLimit), SduiE
         .map_err(SduiError::RequestError)?;
     let rate_limit = RateLimit::from_headers(response.headers());
     let data: GenericSduiResponse = response.json().await.map_err(|_| SduiError::JSONError)?;
-    println!("{:?}", data);
     Ok((
         LoginResponse::from_value(data.data).ok_or(SduiError::LoginError)?,
         rate_limit,
