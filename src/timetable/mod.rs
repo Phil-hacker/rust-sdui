@@ -4,8 +4,8 @@ use serde::{Deserialize, Serialize};
 use crate::prelude::*;
 
 pub async fn get_timetable(
-    token: &String,
-    user_id: &String,
+    token: &str,
+    user_id: &str,
     begin: &Date,
     end: &Date,
 ) -> Result<(TimeTable, RateLimit), SduiError> {
@@ -28,13 +28,13 @@ pub async fn get_timetable(
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct Date {
-    pub day: i8,
-    pub month: i8,
+    pub day: u8,
+    pub month: u8,
     pub year: i32,
 }
 
 impl Date {
-    pub fn new(day: i8, month: i8, year: i32) -> Self {
+    pub fn new(day: u8, month: u8, year: i32) -> Self {
         Date { day, month, year }
     }
 }

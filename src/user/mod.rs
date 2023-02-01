@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{grade::Grade, prelude::*};
 
-pub async fn get_self(token: &String) -> Result<(SduiUser, RateLimit), SduiError> {
+pub async fn get_self(token: &str) -> Result<(SduiUser, RateLimit), SduiError> {
     let response = CLIENT
         .get("https://api.sdui.app/v1/users/self")
         .bearer_auth(token)
