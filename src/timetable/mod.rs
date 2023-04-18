@@ -45,7 +45,7 @@ pub async fn get_times(token: &str) -> Result<(Times, RateLimit), SduiError> {
 }
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
-pub struct Times {}
+pub struct Times(Vec<Time>);
 #[derive(Debug, Clone, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct Time {
     pub begins_at: u64,
