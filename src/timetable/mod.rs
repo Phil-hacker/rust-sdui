@@ -28,7 +28,7 @@ pub async fn get_timetable(
 
 pub async fn get_times(token: &str) -> Result<(Vec<Time>, RateLimit), SduiError> {
     let response = CLIENT
-        .get("https://api.sdui.app/v1/times")
+        .get("https://api.sdui.app/v1/timetables/times")
         .bearer_auth(token)
         .send()
         .await
