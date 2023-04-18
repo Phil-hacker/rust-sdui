@@ -26,6 +26,91 @@ pub async fn get_timetable(
     Ok((data.data, rate_limit))
 }
 
+pub async fn get_times(token: &str) -> Result<(Times, RateLimit), SduiError> {
+    let response = CLIENT
+        .get("https://api.sdui.app/v1/times")
+        .bearer_auth(token)
+        .send()
+        .await
+        .map_err(SduiError::RequestError)?;
+    if response.status() == StatusCode::UNAUTHORIZED {
+        return Err(SduiError::NotLoggedIn);
+    }
+    let rate_limit = RateLimit::from_headers(response.headers());
+    let data = response
+        .json::<SduiResponse<TimeTable>>()
+        .await
+        .map_err(SduiError::RequestError)?;
+    Ok((data.data, rate_limit))
+}
+
+#[derive(Debug, Clone, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+pub struct Times {}
+#[derive(Debug, Clone, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+pub struct Time {
+    pub begins_at: u64,
+    pub description: Option<String>,
+    pub ends_at: u64,
+    pub hour: u8,
+    pub id: u64,
+    pub is_hidden: bool,
+    pub meta: TimeMeta,
+    pub name: String,
+    #[serde(rename = "type")]
+    pub kind: TimeKind,
+}
+
+#[derive(Debug, Clone, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+pub enum TimeKind {
+    BREAK,
+    LESSON,
+}
+impl Serialize for TimeKind {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        match self {
+            TimeKind::BREAK => serializer.serialize_str("BREAK"),
+            TimeKind::LESSON => serializer.serialize_str("LESSON"),
+        }
+    }
+}
+
+impl<'de> Deserialize<'de> for TimeKind {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        struct TimeKindVisitor;
+
+        impl<'de> Visitor<'de> for TimeKindVisitor {
+            type Value = TimeKind;
+
+            fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                formatter.write_str("Expected BREAK,LESSON")
+            }
+            fn visit_string<E>(self, v: String) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                match v {
+                    "BREAK" => Ok(TimeKind::BREAK),
+                    "LESSON" => Ok(TimeKind::LESSON),
+                    _ => Err(serde::de::Error::invalid_value(
+                        serde::de::Unexpected::Str(v),
+                        &self,
+                    )),
+                }
+            }
+        }
+        deserializer.deserialize_string(TimeKindVisitor {})
+    }
+}
+
+#[derive(Debug, Clone, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+pub struct TimeMeta {}
+
 #[derive(Debug, Clone, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct Date {
     pub day: u8,
