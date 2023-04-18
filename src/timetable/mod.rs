@@ -120,3 +120,25 @@ pub struct Subject {
 pub struct SubjectMeta {
     pub displayname: String,
 }
+
+enum LessonType {
+    NORMAL,
+    SUBSTITUTION,
+    CANCLED,
+    ADDITIONAL,
+    UNKNOWN,
+}
+
+impl From<Option<String>> for LessonType {
+    fn from(value: Option<String>) -> Self {
+        if let Some(value) = value {
+            return match value.as_str() {
+                "CANCLED" => Self::CANCLED,
+                "SUBSTITUTION" => Self::SUBSTITUTION,
+                "ADDITIONAL" => Self::ADDITIONAL,
+                _ => Self::UNKNOWN,
+            };
+        }
+        Self::NORMAL
+    }
+}
