@@ -26,7 +26,7 @@ pub async fn get_timetable(
     Ok((data.data, rate_limit))
 }
 
-pub async fn get_times(token: &str) -> Result<(Times, RateLimit), SduiError> {
+pub async fn get_times(token: &str) -> Result<(Vec<Time>, RateLimit), SduiError> {
     let response = CLIENT
         .get("https://api.sdui.app/v1/times")
         .bearer_auth(token)
@@ -38,14 +38,12 @@ pub async fn get_times(token: &str) -> Result<(Times, RateLimit), SduiError> {
     }
     let rate_limit = RateLimit::from_headers(response.headers());
     let data = response
-        .json::<SduiResponse<Times>>()
+        .json::<SduiResponse<Vec<Time>>>()
         .await
         .map_err(SduiError::RequestError)?;
     Ok((data.data, rate_limit))
 }
 
-#[derive(Debug, Clone, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
-pub struct Times(Vec<Time>);
 #[derive(Debug, Clone, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct Time {
     pub begins_at: u64,
