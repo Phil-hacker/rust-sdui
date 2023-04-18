@@ -107,7 +107,9 @@ impl<'de> Deserialize<'de> for TimeKind {
 }
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
-pub struct TimeMeta {}
+pub struct TimeMeta {
+    pub displayname: String,
+}
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct Date {
