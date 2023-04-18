@@ -38,7 +38,7 @@ pub async fn get_times(token: &str) -> Result<(Times, RateLimit), SduiError> {
     }
     let rate_limit = RateLimit::from_headers(response.headers());
     let data = response
-        .json::<SduiResponse<TimeTable>>()
+        .json::<SduiResponse<Times>>()
         .await
         .map_err(SduiError::RequestError)?;
     Ok((data.data, rate_limit))
@@ -60,7 +60,7 @@ pub struct Time {
     pub kind: TimeKind,
 }
 
-#[derive(Debug, Clone, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Debug, Clone, Hash, Eq, PartialEq, PartialOrd, Ord)]
 pub enum TimeKind {
     BREAK,
     LESSON,
@@ -90,7 +90,7 @@ impl<'de> Deserialize<'de> for TimeKind {
             fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
                 formatter.write_str("Expected BREAK,LESSON")
             }
-            fn visit_string<E>(self, v: String) -> Result<Self::Value, E>
+            fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
             where
                 E: serde::de::Error,
             {
@@ -104,7 +104,7 @@ impl<'de> Deserialize<'de> for TimeKind {
                 }
             }
         }
-        deserializer.deserialize_string(TimeKindVisitor {})
+        deserializer.deserialize_str(TimeKindVisitor {})
     }
 }
 
