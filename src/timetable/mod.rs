@@ -1,5 +1,5 @@
 use reqwest::StatusCode;
-use serde::{Deserialize, Serialize};
+use serde::{de::Visitor, Deserialize, Serialize};
 
 use crate::prelude::*;
 
@@ -56,6 +56,7 @@ pub struct Lesson {
     pub comment: String,
     pub course: Course,
     pub meta: LessonMeta,
+    pub kind: LessonKind,
 }
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
@@ -121,24 +122,76 @@ pub struct SubjectMeta {
     pub displayname: String,
 }
 
-enum LessonType {
+#[derive(Debug, Clone, Hash, Eq, PartialEq, PartialOrd, Ord)]
+pub enum LessonKind {
     NORMAL,
     SUBSTITUTION,
     CANCLED,
     ADDITIONAL,
-    UNKNOWN,
 }
 
-impl From<Option<String>> for LessonType {
-    fn from(value: Option<String>) -> Self {
-        if let Some(value) = value {
-            return match value.as_str() {
-                "CANCLED" => Self::CANCLED,
-                "SUBSTITUTION" => Self::SUBSTITUTION,
-                "ADDITIONAL" => Self::ADDITIONAL,
-                _ => Self::UNKNOWN,
-            };
+impl Serialize for LessonKind {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        match self {
+            LessonKind::NORMAL => serializer.serialize_none(),
+            LessonKind::SUBSTITUTION => serializer.serialize_str("SUBSTITUTION"),
+            LessonKind::CANCLED => serializer.serialize_str("CANCLED"),
+            LessonKind::ADDITIONAL => serializer.serialize_str("ADDITIONAL"),
         }
-        Self::NORMAL
+    }
+}
+impl<'de> Deserialize<'de> for LessonKind {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        struct LessonKindVisitor;
+
+        impl<'de> Visitor<'de> for LessonKindVisitor {
+            type Value = LessonKind;
+
+            fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                formatter.write_str("Expected none,SUBSTITUTION,CANCLED or ADDITIONAL")
+            }
+            fn visit_none<E>(self) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                Ok(LessonKind::NORMAL)
+            }
+            fn visit_some<D>(self, deserializer: D) -> Result<Self::Value, D::Error>
+            where
+                D: serde::Deserializer<'de>,
+            {
+                struct LessonKindSomeVisitor;
+
+                impl<'de> Visitor<'de> for LessonKindSomeVisitor {
+                    type Value = LessonKind;
+
+                    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                        formatter.write_str("Expected none,SUBSTITUTION,CANCLED or ADDITIONAL")
+                    }
+                    fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+                    where
+                        E: serde::de::Error,
+                    {
+                        match v {
+                            "SUBSTITUTION" => Ok(LessonKind::SUBSTITUTION),
+                            "CANCLED" => Ok(LessonKind::CANCLED),
+                            "ADDITIONAL" => Ok(LessonKind::ADDITIONAL),
+                            _ => Err(serde::de::Error::invalid_value(
+                                serde::de::Unexpected::Str(v),
+                                &self,
+                            )),
+                        }
+                    }
+                }
+                deserializer.deserialize_str(LessonKindSomeVisitor)
+            }
+        }
+        deserializer.deserialize_option(LessonKindVisitor {})
     }
 }
