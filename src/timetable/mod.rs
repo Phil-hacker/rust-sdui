@@ -3,6 +3,11 @@ use serde::{de::Visitor, Deserialize, Serialize};
 
 use crate::prelude::*;
 
+#[cfg(feature = "processing")]
+mod processing;
+#[cfg(feature = "processing")]
+pub use crate::timetable::processing::*;
+
 pub async fn get_timetable(
     token: &str,
     user_id: &str,
