@@ -1,21 +1,43 @@
 use reqwest::header::{HeaderMap, HeaderValue};
 use serde::Deserialize;
 
-lazy_static!{
-    pub(crate) static ref CLIENT: reqwest::Client = reqwest::Client::builder().https_only(true).user_agent(concat!(env!("CARGO_PKG_NAME"),"/",env!("CARGO_PKG_VERSION"),)).build().unwrap_or_default();
+lazy_static! {
+    pub(crate) static ref CLIENT: reqwest::Client = reqwest::Client::builder()
+        .https_only(true)
+        .user_agent(concat!(
+            env!("CARGO_PKG_NAME"),
+            "/",
+            env!("CARGO_PKG_VERSION"),
+        ))
+        .build()
+        .unwrap_or_default();
 }
 
 #[derive(Debug)]
 pub struct RateLimit {
     pub limit: u64,
-    pub remaining: u64
+    pub remaining: u64,
 }
 
 impl RateLimit {
     pub fn from_headers(headers: &HeaderMap) -> Self {
-        RateLimit { 
-            limit: headers.get("x-ratelimit-limit").unwrap_or(&HeaderValue::from_str("0").unwrap()).to_str().unwrap_or("0").to_string().parse::<u64>().unwrap_or(0),
-            remaining: headers.get("x-ratelimit-limit").unwrap_or(&HeaderValue::from_str("0").unwrap()).to_str().unwrap_or("0").to_string().parse::<u64>().unwrap_or(0)
+        RateLimit {
+            limit: headers
+                .get("x-ratelimit-limit")
+                .unwrap_or(&HeaderValue::from_str("0").unwrap())
+                .to_str()
+                .unwrap_or("0")
+                .to_string()
+                .parse::<u64>()
+                .unwrap_or(0),
+            remaining: headers
+                .get("x-ratelimit-limit")
+                .unwrap_or(&HeaderValue::from_str("0").unwrap())
+                .to_str()
+                .unwrap_or("0")
+                .to_string()
+                .parse::<u64>()
+                .unwrap_or(0),
         }
     }
 }
@@ -33,16 +55,15 @@ pub type GenericSduiResponse = SduiResponse<serde_json::Value>;
 pub struct SduiResponse<T> {
     pub data: T,
     pub status: String,
-    pub meta: SduiMeta
+    pub meta: SduiMeta,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct SduiMeta {
     pub warnings: serde_json::Value,
     pub errors: serde_json::Value,
-    pub success: serde_json::Value
+    pub success: serde_json::Value,
 }
-
 
 #[derive(Debug)]
 pub struct School {
@@ -50,7 +71,7 @@ pub struct School {
     name: String,
     name_alias: Option<String>,
     slink: String,
-    uuid: String
+    uuid: String,
 }
 
 impl School {
@@ -61,7 +82,7 @@ impl School {
             name: map.get("name")?.as_str()?.to_string(),
             name_alias: map.get("name_alias")?.as_str().map(|str| str.to_string()),
             slink: map.get("slink")?.as_str()?.to_string(),
-            uuid: map.get("uuid")?.as_str()?.to_string()
+            uuid: map.get("uuid")?.as_str()?.to_string(),
         })
     }
     pub fn get_id(&self) -> u64 {
