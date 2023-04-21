@@ -4,6 +4,9 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+futures = "0.3.28"
+itertools = { version = "0.10.5", optional = true }
+join = "0.3.1"
 lazy_static = "1.4.0"
 reqwest = { version = "0.11.13", default-features = false, features = ["serde_json", "json", "rustls-tls"] }
 serde = { version = "1.0.152", features = ["derive"] }
@@ -11,3 +14,6 @@ serde_json = "1.0.91"
 
 [dev-dependencies]
 tokio = { version = "1.23.0", features = ["rt", "macros"]}
+
+[features]
+processing = ["dep:itertools"]
