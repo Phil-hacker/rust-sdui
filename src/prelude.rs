@@ -40,6 +40,13 @@ impl RateLimit {
                 .unwrap_or(0),
         }
     }
+
+    pub(crate) fn join(&self, other: RateLimit) -> RateLimit {
+        RateLimit {
+            limit: self.limit.min(other.limit),
+            remaining: self.remaining.min(other.remaining),
+        }
+    }
 }
 
 #[derive(Debug)]
