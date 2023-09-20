@@ -108,3 +108,25 @@ impl School {
         self.uuid.clone()
     }
 }
+
+macro_rules! fill_authenticated_api_function {
+    ($api:expr,$token:expr,$return_type:ty) => {
+        {
+            let response = CLIENT
+                .get($api)
+                .bearer_auth($token)
+                .send()
+                .await
+                .map_err(SduiError::RequestError)?;
+            if response.status() == StatusCode::UNAUTHORIZED {
+                return Err(SduiError::NotLoggedIn);
+            }
+            let rate_limit = RateLimit::from_headers(response.headers());
+            let data = response
+                .json::<SduiResponse<$return_type>>()
+                .await
+                .map_err(SduiError::RequestError)?;
+            Ok((data.data, rate_limit))
+        }
+    }
+}

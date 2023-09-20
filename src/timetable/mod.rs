@@ -14,39 +14,15 @@ pub async fn get_timetable(
     begin: &Date,
     end: &Date,
 ) -> Result<(TimeTable, RateLimit), SduiError> {
-    let response = CLIENT
-        .get(format!("https://api.sdui.app/v1/timetables/users/{}/timetable?begins_at={}-{}-{}&ends_at={}-{}-{}",user_id,begin.year,begin.month,begin.day,end.year,end.month,end.day))
-        .bearer_auth(token)
-        .send()
-        .await
-        .map_err(SduiError::RequestError)?;
-    if response.status() == StatusCode::UNAUTHORIZED {
-        return Err(SduiError::NotLoggedIn);
-    }
-    let rate_limit = RateLimit::from_headers(response.headers());
-    let data = response
-        .json::<SduiResponse<TimeTable>>()
-        .await
-        .map_err(SduiError::RequestError)?;
-    Ok((data.data, rate_limit))
+    return fill_authenticated_api_function!(
+        format!("https://api.sdui.app/v1/timetables/users/{}/timetable?begins_at={}-{}-{}&ends_at={}-{}-{}",user_id,begin.year,begin.month,begin.day,end.year,end.month,end.day),
+        token,
+        TimeTable
+    );
 }
 
 pub async fn get_times(token: &str) -> Result<(Vec<Time>, RateLimit), SduiError> {
-    let response = CLIENT
-        .get("https://api.sdui.app/v1/timetables/times")
-        .bearer_auth(token)
-        .send()
-        .await
-        .map_err(SduiError::RequestError)?;
-    if response.status() == StatusCode::UNAUTHORIZED {
-        return Err(SduiError::NotLoggedIn);
-    }
-    let rate_limit = RateLimit::from_headers(response.headers());
-    let data = response
-        .json::<SduiResponse<Vec<Time>>>()
-        .await
-        .map_err(SduiError::RequestError)?;
-    Ok((data.data, rate_limit))
+    return fill_authenticated_api_function!("https://api.sdui.app/v1/timetables/times",token,Vec<Time>);
 }
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]

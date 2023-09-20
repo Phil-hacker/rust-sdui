@@ -4,42 +4,14 @@ use serde::{Deserialize, Serialize};
 use crate::{grade::Grade, prelude::*};
 
 pub async fn get_self(token: &str) -> Result<(SduiUser, RateLimit), SduiError> {
-    let response = CLIENT
-        .get("https://api.sdui.app/v1/users/self")
-        .bearer_auth(token)
-        .send()
-        .await
-        .map_err(SduiError::RequestError)?;
-    if response.status() == StatusCode::UNAUTHORIZED {
-        return Err(SduiError::NotLoggedIn);
-    }
-    let rate_limit = RateLimit::from_headers(response.headers());
-    let data = response
-        .json::<SduiResponse<SduiUser>>()
-        .await
-        .map_err(SduiError::RequestError)?;
-    Ok((data.data, rate_limit))
+    return fill_authenticated_api_function!("https://api.sdui.app/v1/users/self",token,SduiUser);
 }
 
 pub async fn get_user(
     token: &String,
     user_id: &String,
 ) -> Result<(SduiUser, RateLimit), SduiError> {
-    let response = CLIENT
-        .get(format!("https://api.sdui.app/v1/users/{}", user_id))
-        .bearer_auth(token)
-        .send()
-        .await
-        .map_err(SduiError::RequestError)?;
-    if response.status() == StatusCode::UNAUTHORIZED {
-        return Err(SduiError::NotLoggedIn);
-    }
-    let rate_limit = RateLimit::from_headers(response.headers());
-    let data = response
-        .json::<SduiResponse<SduiUser>>()
-        .await
-        .map_err(SduiError::RequestError)?;
-    Ok((data.data, rate_limit))
+    return fill_authenticated_api_function!(format!("https://api.sdui.app/v1/users/{}", user_id),token,SduiUser);
 }
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
