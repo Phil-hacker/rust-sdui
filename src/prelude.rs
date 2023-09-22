@@ -1,5 +1,8 @@
-use reqwest::header::{HeaderMap, HeaderValue};
-use serde::Deserialize;
+use reqwest::{
+    header::{HeaderMap, HeaderValue},
+    StatusCode,
+};
+use serde::{de::DeserializeOwned, Deserialize};
 
 lazy_static! {
     pub(crate) static ref CLIENT: reqwest::Client = reqwest::Client::builder()
@@ -109,24 +112,23 @@ impl School {
     }
 }
 
-macro_rules! fill_authenticated_api_function {
-    ($api:expr,$token:expr,$return_type:ty) => {
-        {
-            let response = CLIENT
-                .get($api)
-                .bearer_auth($token)
-                .send()
-                .await
-                .map_err(SduiError::RequestError)?;
-            if response.status() == StatusCode::UNAUTHORIZED {
-                return Err(SduiError::NotLoggedIn);
-            }
-            let rate_limit = RateLimit::from_headers(response.headers());
-            let data = response
-                .json::<SduiResponse<$return_type>>()
-                .await
-                .map_err(SduiError::RequestError)?;
-            Ok((data.data, rate_limit))
-        }
+pub async fn request<T: DeserializeOwned>(
+    url: &str,
+    token: &str,
+) -> Result<(T, RateLimit), SduiError> {
+    let response = CLIENT
+        .get(url)
+        .bearer_auth(token)
+        .send()
+        .await
+        .map_err(SduiError::RequestError)?;
+    if response.status() == StatusCode::UNAUTHORIZED {
+        return Err(SduiError::NotLoggedIn);
     }
+    let rate_limit = RateLimit::from_headers(response.headers());
+    let data = response
+        .json::<SduiResponse<T>>()
+        .await
+        .map_err(SduiError::RequestError)?;
+    Ok((data.data, rate_limit))
 }

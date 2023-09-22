@@ -1,17 +1,16 @@
-use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 
 use crate::{grade::Grade, prelude::*};
 
 pub async fn get_self(token: &str) -> Result<(SduiUser, RateLimit), SduiError> {
-    return fill_authenticated_api_function!("https://api.sdui.app/v1/users/self",token,SduiUser);
+    request("https://api.sdui.app/v1/users/self", token).await
 }
 
 pub async fn get_user(
     token: &String,
     user_id: &String,
 ) -> Result<(SduiUser, RateLimit), SduiError> {
-    return fill_authenticated_api_function!(format!("https://api.sdui.app/v1/users/{}", user_id),token,SduiUser);
+    request(&format!("https://api.sdui.app/v1/users/{}", user_id), token).await
 }
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]

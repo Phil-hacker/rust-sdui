@@ -1,4 +1,3 @@
-use reqwest::StatusCode;
 use serde::{de::Visitor, Deserialize, Serialize};
 
 use crate::prelude::*;
@@ -14,15 +13,14 @@ pub async fn get_timetable(
     begin: &Date,
     end: &Date,
 ) -> Result<(TimeTable, RateLimit), SduiError> {
-    return fill_authenticated_api_function!(
-        format!("https://api.sdui.app/v1/timetables/users/{}/timetable?begins_at={}-{}-{}&ends_at={}-{}-{}",user_id,begin.year,begin.month,begin.day,end.year,end.month,end.day),
-        token,
-        TimeTable
-    );
+    request(
+        &format!("https://api.sdui.app/v1/timetables/users/{}/timetable?begins_at={}-{}-{}&ends_at={}-{}-{}",user_id,begin.year,begin.month,begin.day,end.year,end.month,end.day),
+        token
+    ).await
 }
 
 pub async fn get_times(token: &str) -> Result<(Vec<Time>, RateLimit), SduiError> {
-    return fill_authenticated_api_function!("https://api.sdui.app/v1/timetables/times",token,Vec<Time>);
+    request(&"https://api.sdui.app/v1/timetables/times", token).await
 }
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
