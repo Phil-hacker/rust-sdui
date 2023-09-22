@@ -4,6 +4,7 @@ extern crate lazy_static;
 pub mod auth;
 pub mod grade;
 pub mod news;
+pub mod channel;
 #[macro_use]
 pub mod prelude;
 pub mod timetable;
