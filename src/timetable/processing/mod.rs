@@ -7,7 +7,7 @@ pub async fn get_processed_timetable(
     user_id: &str,
     begin: &Date,
     end: &Date,
-) -> Result<(ProcessedTimeTable, RateLimit), SduiError> {
+) -> SduiResult<ProcessedTimeTable> {
     let timetable = get_timetable(token, user_id, begin, end).await?;
     let mut days: Vec<(u64, Lesson)> = vec![];
     for lesson in timetable.0.lessons {

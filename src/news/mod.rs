@@ -3,7 +3,7 @@ use crate::user::PartialSduiUser;
 use crate::{channel::Channel, prelude::*};
 use serde::{Deserialize, Serialize};
 
-pub async fn get_self_news(token: &str, page: u64) -> Result<(Vec<News>, RateLimit), SduiError> {
+pub async fn get_self_news(token: &str, page: u64) -> SduiResult<Vec<News>> {
     request(
         &format!("https://api.sdui.app/v1/users/self/feed/news?page={}", page),
         token,
@@ -15,7 +15,7 @@ pub async fn get_news(
     token: &str,
     user_id: u64,
     page: u64,
-) -> Result<(Vec<News>, RateLimit), SduiError> {
+) -> SduiResult<Vec<News>> {
     request(
         &format!(
             "https://api.sdui.app/v1/users/{}/feed/news?page={}",

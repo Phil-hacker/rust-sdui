@@ -12,14 +12,14 @@ pub async fn get_timetable(
     user_id: &str,
     begin: &Date,
     end: &Date,
-) -> Result<(TimeTable, RateLimit), SduiError> {
+) -> SduiResult<TimeTable> {
     request(
         &format!("https://api.sdui.app/v1/timetables/users/{}/timetable?begins_at={}-{}-{}&ends_at={}-{}-{}",user_id,begin.year,begin.month,begin.day,end.year,end.month,end.day),
         token
     ).await
 }
 
-pub async fn get_times(token: &str) -> Result<(Vec<Time>, RateLimit), SduiError> {
+pub async fn get_times(token: &str) -> SduiResult<Vec<Time>> {
     request(&"https://api.sdui.app/v1/timetables/times", token).await
 }
 

@@ -22,6 +22,8 @@ pub struct RateLimit {
     pub remaining: u64,
 }
 
+pub type SduiResult<T> = Result<(T, RateLimit), SduiError>;
+
 impl RateLimit {
     pub fn from_headers(headers: &HeaderMap) -> Self {
         RateLimit {
@@ -112,10 +114,7 @@ impl School {
     }
 }
 
-pub async fn request<T: DeserializeOwned>(
-    url: &str,
-    token: &str,
-) -> Result<(T, RateLimit), SduiError> {
+pub async fn request<T: DeserializeOwned>(url: &str, token: &str) -> SduiResult<T> {
     let response = CLIENT
         .get(url)
         .bearer_auth(token)

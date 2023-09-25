@@ -41,7 +41,7 @@ impl ChatRequest {
         self
     }
 
-    pub async fn request(&self) -> Result<(SduiResponse<Vec<Chat>>, RateLimit), SduiError> {
+    pub async fn request(&self) -> SduiResult<SduiResponse<Vec<Chat>>> {
         request(
             &format!(
                 "https://api.sdui.app/v1/users/self/channels/chats?&with_archived={}&page={}&search={}&limit={}",
@@ -53,7 +53,7 @@ impl ChatRequest {
     }
 }
 
-pub async fn get_chat(token: &str, id: &u64) -> Result<(SduiResponse<Chat>, RateLimit), SduiError> {
+pub async fn get_chat(token: &str, id: &u64) -> SduiResult<SduiResponse<Chat>> {
     request(&format!("https://api.sdui.app/v1/channels/{}", id), token).await
 }
 

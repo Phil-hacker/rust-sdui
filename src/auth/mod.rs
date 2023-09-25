@@ -2,7 +2,7 @@ use crate::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::str;
 
-pub async fn search_schools(school: &str) -> Result<(Vec<School>, RateLimit), SduiError> {
+pub async fn search_schools(school: &str) -> SduiResult<Vec<School>> {
     let response = CLIENT
         .get(format!("https://api.sdui.app/v1/leads?search={}", school))
         .send()
@@ -23,7 +23,7 @@ pub async fn search_schools(school: &str) -> Result<(Vec<School>, RateLimit), Sd
     Ok((schools, rate_limit))
 }
 
-pub async fn login(data: &LoginData) -> Result<(LoginResponse, RateLimit), SduiError> {
+pub async fn login(data: &LoginData) -> SduiResult<LoginResponse> {
     let response = CLIENT
         .post("https://api.sdui.app/v1/auth/login")
         .json(data)

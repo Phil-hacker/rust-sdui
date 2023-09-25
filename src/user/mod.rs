@@ -2,11 +2,11 @@ use serde::{Deserialize, Serialize};
 
 use crate::{grade::Grade, prelude::*};
 
-pub async fn get_self(token: &str) -> Result<(SduiUser, RateLimit), SduiError> {
+pub async fn get_self(token: &str) -> SduiResult<SduiUser> {
     request("https://api.sdui.app/v1/users/self", token).await
 }
 
-pub async fn get_user(token: &str, user_id: &u64) -> Result<(SduiUser, RateLimit), SduiError> {
+pub async fn get_user(token: &str, user_id: &u64) -> SduiResult<SduiUser> {
     request(&format!("https://api.sdui.app/v1/users/{}", user_id), token).await
 }
 
@@ -28,7 +28,7 @@ pub struct PartialSduiUser {
 }
 
 impl PartialSduiUser {
-    pub async fn get_user(&self, token: &str) -> Result<(SduiUser, RateLimit), SduiError> {
+    pub async fn get_user(&self, token: &str) -> SduiResult<SduiUser> {
         get_user(token, &self.id).await
     }
 }
