@@ -20,7 +20,7 @@ pub async fn get_timetable(
 }
 
 pub async fn get_times(token: &str) -> SduiResult<Vec<Time>> {
-    request(&"https://api.sdui.app/v1/timetables/times", token).await
+    request("https://api.sdui.app/v1/timetables/times", token).await
 }
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
