@@ -2,7 +2,7 @@ use reqwest::{
     header::{HeaderMap, HeaderValue},
     StatusCode,
 };
-use serde::{de::DeserializeOwned, Deserialize};
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
 
 lazy_static! {
     pub(crate) static ref CLIENT: reqwest::Client = reqwest::Client::builder()
@@ -75,7 +75,7 @@ pub struct SduiMeta {
     pub success: serde_json::Value,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Hash, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct School {
     id: u64,
     name: String,
