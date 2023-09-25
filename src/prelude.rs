@@ -36,7 +36,7 @@ impl RateLimit {
                 .parse::<u64>()
                 .unwrap_or(0),
             remaining: headers
-                .get("x-ratelimit-limit")
+                .get("x-ratelimit-remaining")
                 .unwrap_or(&HeaderValue::from_str("0").unwrap())
                 .to_str()
                 .unwrap_or("0")
