@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{cloud::PartialCloud, prelude::*};
+use crate::{cloud::Cloud, prelude::*};
 
 pub struct ChatRequest {
     token: String,
@@ -66,7 +66,7 @@ pub struct Chat {
     pub can: ChatCan,
     pub chat: PartialChat,
     pub chat_id: u64,
-    pub cloud: PartialCloud,
+    pub cloud: Cloud,
     pub cloud_id: u64,
     pub code: String,
     pub color: Option<String>,
