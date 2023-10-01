@@ -91,7 +91,7 @@ pub struct Chat {
     pub school: School,
     pub school_id: u64,
     pub subtitle: Option<String>,
-    pub target: String,
+    pub target: Option<String>,
     pub trashed_at: Option<String>,
     pub twoway_expires_at: Option<String>,
     #[serde(rename = "type")]

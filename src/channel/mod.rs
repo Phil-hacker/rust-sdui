@@ -16,7 +16,7 @@ pub struct Channel {
     pub chat_id: u64,
     pub cloud_id: u64,
     pub calendar_id: u64,
-    pub target: String,
+    pub target: Option<String>,
     pub intern_id: Option<String>,
     pub avatar: Option<String>,
     pub icon: Option<String>,
