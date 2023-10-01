@@ -68,6 +68,7 @@ pub struct UserMeta {
     pub deleted_at: Option<u64>,
     #[serde(default)]
     pub is_trackable_classbook_user: bool,
+    #[serde(default)]
     pub calendar_notification_count: u64,
 }
 
