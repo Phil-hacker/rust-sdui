@@ -42,7 +42,7 @@ pub struct News {
     pub is_official: u8,
     pub is_pinned: bool,
     pub meta: NewsMeta,
-    pub preview: String,
+    pub preview: Option<Attachment>,
     pub publish_at: Option<String>,
     pub survey: Option<Survey>,
     pub survey_uuid: Option<String>,
