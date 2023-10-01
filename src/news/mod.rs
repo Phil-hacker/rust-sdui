@@ -42,13 +42,19 @@ pub struct News {
     pub is_official: u8,
     pub is_pinned: bool,
     pub meta: NewsMeta,
-    pub preview: Option<Attachment>,
+    pub preview: NewsPreview,
     pub publish_at: Option<String>,
     pub survey: Option<Survey>,
     pub survey_uuid: Option<String>,
     pub title: String,
     pub updated_at: Option<String>,
     pub user: PartialSduiUser,
+}
+
+#[derive(Debug, Clone, PartialEq, PartialOrd, Serialize, Deserialize)]
+pub enum NewsPreview {
+    Attachment(Attachment),
+    String(String),
 }
 
 #[derive(Debug, Clone, PartialEq, PartialOrd, Serialize, Deserialize)]
