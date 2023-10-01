@@ -5,8 +5,8 @@ pub struct Channel {
     pub meta: ChannelMeta,
     pub id: u64,
     pub name: String,
-    pub description: String,
-    pub description_members: String,
+    pub description: Option<String>,
+    pub description_members: Option<String>,
     pub subtitle: Option<String>,
     #[serde(rename = "type")]
     pub channel_type: String,
