@@ -80,7 +80,7 @@ pub struct Chat {
     pub group: Option<String>,
     pub icon: Option<String>,
     pub id: u64,
-    pub intern_id: String,
+    pub intern_id: Option<String>,
     pub is_disabled: bool,
     pub is_hidden_memberlist: bool,
     pub is_leavable: bool,
