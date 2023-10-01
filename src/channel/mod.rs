@@ -33,7 +33,7 @@ pub struct Channel {
     pub trashed_at: Option<String>,
     pub created_at: String,
     pub updated_at: Option<String>,
-    pub group: String,
+    pub group: Option<String>,
     pub disabled_by_id: Option<u64>,
 }
 
