@@ -59,7 +59,7 @@ pub struct UserMeta {
     #[serde(rename = "type")]
     pub role: String,
     pub uri: String,
-    pub avatar_uri: String,
+    pub avatar_uri: Option<String>,
     pub salutation: String,
     pub days_until_deletion: u64,
     pub is_signed: bool,
