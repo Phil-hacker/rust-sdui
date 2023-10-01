@@ -52,6 +52,7 @@ pub struct News {
 }
 
 #[derive(Debug, Clone, PartialEq, PartialOrd, Serialize, Deserialize)]
+#[serde(untagged)]
 pub enum NewsPreview {
     Attachment(Attachment),
     String(String),
