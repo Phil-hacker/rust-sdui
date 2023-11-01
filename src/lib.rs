@@ -5,6 +5,7 @@ pub mod auth;
 pub mod channel;
 pub mod chat;
 pub mod cloud;
+pub mod files;
 pub mod grade;
 pub mod news;
 #[macro_use]
