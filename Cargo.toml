@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+bytes = "1.5.0"
 futures = "0.3.28"
 itertools = { version = "0.10.5", optional = true }
 join = "0.3.1"

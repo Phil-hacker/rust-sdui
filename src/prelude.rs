@@ -1,3 +1,5 @@
+use bytes::Bytes;
+
 use reqwest::{
     header::{HeaderMap, HeaderValue},
     StatusCode,
@@ -111,6 +113,19 @@ impl School {
     }
     pub fn get_uuid(&self) -> String {
         self.uuid.clone()
+    }
+}
+
+pub async fn download(url: &str) -> Result<Bytes, SduiError> {
+    let response = CLIENT
+        .get(url)
+        .send()
+        .await
+        .map_err(SduiError::RequestError)?;
+    if response.status() == StatusCode::UNAUTHORIZED {
+        Err(SduiError::NotLoggedIn)
+    } else {
+        response.bytes().await.map_err(SduiError::RequestError)
     }
 }
 
