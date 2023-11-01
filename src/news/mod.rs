@@ -11,18 +11,15 @@ pub async fn get_self_news(token: &str, page: u64) -> SduiResult<Vec<News>> {
     .await
 }
 
-pub async fn get_news(
-    token: &str,
-    user_id: u64,
-    page: u64,
-) -> SduiResult<Vec<News>> {
+pub async fn get_news(token: &str, user_id: u64, page: u64) -> SduiResult<Vec<News>> {
     request(
         &format!(
             "https://api.sdui.app/v1/users/{}/feed/news?page={}",
             user_id, page
         ),
         token,
-    ).await
+    )
+    .await
 }
 
 #[derive(Debug, Clone, PartialEq, PartialOrd, Serialize, Deserialize)]
