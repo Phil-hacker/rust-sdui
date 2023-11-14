@@ -113,10 +113,10 @@ pub struct ChatCan {
     pub leave: u8,
     #[serde(rename = "manage-admins")]
     pub manage_admins: u8,
+    #[serde(rename = "move-channel-content")]
+    pub move_channel_content: u8,
     #[serde(rename = "manage-users")]
     pub manage_users: u8,
-    #[serde(rename = "move_channel_content")]
-    pub move_channel_content: u8,
     pub pin: u8,
     #[serde(rename = "start-conference")]
     pub start_conference: u8,
@@ -124,7 +124,7 @@ pub struct ChatCan {
     pub toggle_memberlist: u8,
     #[serde(rename = "toggle-state")]
     pub toggle_state: u8,
-    #[serde(rename = "toggle_twoway")]
+    #[serde(rename = "toggle-twoway")]
     pub toggle_twoway: u8,
     pub update: u8,
     #[serde(rename = "view-users")]
