@@ -167,7 +167,7 @@ pub struct ChatMeta {
     pub languages: Vec<String>,
     pub last_knocked_at: Option<String>,
     pub last_unread_count: u8,
-    pub next_possible_knock: NextPossibleKnock,
+    pub next_possible_knock: Option<NextPossibleKnock>,
     pub read_at: String,
     pub shortcut: String,
     pub subtitle: Option<String>,
