@@ -137,7 +137,7 @@ pub struct ChatCan {
 pub struct PartialChat {
     pub can: PartialChatCan,
     pub disabled_at: Option<String>,
-    pub id: u8,
+    pub id: u64,
     pub meta: Vec<PartialChatMeta>,
     pub updated_at: String,
 }
