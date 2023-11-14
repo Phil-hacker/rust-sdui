@@ -158,7 +158,7 @@ pub struct ChatMeta {
     pub description: String,
     pub displayname: String,
     pub is_archived: u8,
-    pub is_moveable: bool,
+    pub is_movable: bool,
     pub is_muted: bool,
     pub is_official: bool,
     pub is_paused: bool,
