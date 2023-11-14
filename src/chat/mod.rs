@@ -115,8 +115,6 @@ pub struct ChatCan {
     pub manage_admins: u8,
     #[serde(rename = "manage-users")]
     pub manage_users: u8,
-    #[serde(rename = "move_channel_content")]
-    pub move_channel_content: u8,
     pub pin: u8,
     #[serde(rename = "start-conference")]
     pub start_conference: u8,
